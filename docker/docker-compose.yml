@@ -1,0 +1,58 @@
+services:
+  koha:
+    # Pre-built docker image eg : inziano/koha:latest
+    # DO NOT use example above as this may no longer exist.
+    image: cifor_icraf/koha:latest
+    container_name: koha
+    ports:
+      - 7001:8080
+      - 7002:8081
+    cap_add:
+      - DAC_READ_SEARCH
+      - SYS_NICE
+    environment:
+      MYSQL_SERVER: db
+      MYSQL_USER: koha
+      MYSQL_PASSWORD: koha
+      DB_NAME: koha
+      MEMCACHED_SERVERS: memcached:11211
+      MB_HOST: rabbitmq
+    depends_on:
+      - db
+      - rabbitmq
+      - memcached
+    networks:
+      - koha
+
+  rabbitmq:
+    image: docker.io/rabbitmq
+    container_name: rabbitmq
+    volumes:
+      - ./rabbitmq_plugins:/etc/rabbitmq/enabled_plugins
+    networks:
+      - koha
+
+  db:
+    image: docker.io/mariadb:11
+    container_name: kohadb
+    volumes:
+      - mariadb-koha:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: koha
+      MARIADB_DATABASE: koha
+      MARIADB_USER: koha
+      MARIADB_PASSWORD: koha
+    networks:
+      - koha
+
+  memcached:
+    image: docker.io/memcached
+    container_name: memcached
+    networks:
+      - koha
+
+volumes:
+  mariadb-koha:
+
+networks:
+  koha:
