@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # koha
 Library management system
 =======
@@ -58,4 +57,3 @@ docker-compose down
 ## Contributing
 
 Contributions, bug reports, and feature requests are welcome! Please open an issue or submit a pull request with your suggestions.
->>>>>>> f933871 (Koha on docker)
